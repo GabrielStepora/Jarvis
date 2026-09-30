@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="theme-color" content="#050b12">
+
+<title>JARVIS</title>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{margin:0;background:#03070b;color:#e8f7ff;font-family:Arial,sans-serif}
+
+header{padding:28px 20px;text-align:center;border-bottom:1px solid #123247}
+
+h1{font-size:34px;letter-spacing:5px;color:#38bdf8;margin:5px}
+
+.sub{color:#7893a5}
+
+.reactor{width:150px;height:150px;border:3px solid #38bdf8;border-radius:50%;margin:35px auto;display:flex;align-items:center;justify-content:center;box-shadow:0 0 25px #168bd0,0 0 70px #073b5c;animation:pulse 2s infinite}
+
+.core{width:65px;height:65px;border-radius:50%;background:#8ee8ff;box-shadow:0 0 25px #38bdf8}
+
+@keyframes pulse{50%{transform:scale(1.05);box-shadow:0 0 45px #38bdf8,0 0 90px #073b5c}}
+
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px}
+
+button{background:#071521;color:#dff7ff;border:1px solid #155070;border-radius:12px;padding:13px;font-size:15px}
+
+button:active{transform:scale(.97)}
+
+main{padding:15px}
+
+.page{display:none}.page.active{display:block}
+
+.card{background:#071019;border:1px solid #12384d;border-radius:16px;padding:17px;margin:12px 0}
+
+input,textarea,select{width:100%;padding:13px;margin:7px 0;background:#02070b;color:white;border:1px solid #24516a;border-radius:10px}
+
+h2{color:#55cfff}
+
+.item{padding:12px;border-bottom:1px solid #18303d}
+
+.small{font-size:13px;color:#7893a5}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>J A R V I S</h1>
+
+<div class="sub">Sistema pessoal online</div>
+
+</header>
+
+<div class="reactor"><div class="core"></div></div>
+
+<main>
+
+<section id="home" class="page active">
+
+<h2>Central</h2>
+
+<div class="card">
+
+<b>Olá, senhor.</b>
+
+<p>Como posso ajudar hoje?</p>
+
+</div>
+
+<div class="card">
+
+<b>Comandos rápidos</b><br><br>
+
+<button onclick="speak('Sim, senhor. Como posso ajudar?')">🔊 Falar</button>
+
+<button onclick="show('tasks')">⏰ Tarefas</button>
+
+<button onclick="show('football')">⚽ Futebol</button>
+
+</div>
+
+</section>
+
+<section id="tasks" class="page">
+
+<h2>⏰ Tarefas</h2>
+
+<div class="card">
+
+<input id="task" placeholder="Digite uma tarefa">
+
+<input id="deadline" type="datetime-local">
+
+<button onclick="addTask()">Adicionar tarefa</button>
+
+</div>
+
+<div id="taskList"></div>
+
+</section>
+
+<section id="football" class="page">
+
+<h2>⚽ Futebol</h2>
+
+<div class="card">
+
+<p>Treino de hoje</p>
+
+<button onclick="registerTraining()">Registrar treino</button>
+
+<button onclick="stretch()">Alongamento</button>
+
+</div>
+
+<div id="footballData"></div>
+
+</section>
+
+<section id="school" class="page">
+
+<h2>📚 Escola</h2>
+
+<div class="card">
+
+<input id="subject" placeholder="Matéria">
+
+<input id="schoolTask" placeholder="Tarefa">
+
+<button onclick="addSchool()">Adicionar</button>
+
+</div>
+
+<div id="schoolList"></div>
+
+</section>
+
+<section id="memory" class="page">
+
+<h2>🧠 Memória</h2>
+
+<div class="card">
+
+<select id="category">
+
+<option>Pessoal</option>
+
+<option>Futebol</option>
+
+<option>Escola</option>
+
+<option>Finanças</option>
+
+<option>Metas</option>
+
+<option>Notas</option>
+
+<option>Outras</option>
+
+</select>
+
+<textarea id="memoryText" placeholder="Informação para guardar"></textarea>
+
+<button onclick="saveMemory()">Guardar memória</button>
+
+</div>
+
+<div id="memoryList"></div>
+
+</section>
+
+<section id="notes" class="page">
+
+<h2>📝 Notas</h2>
+
+<div class="card">
+
+<textarea id="note" placeholder="Escreva sua nota"></textarea>
+
+<button onclick="saveNote()">Guardar nota</button>
+
+</div>
+
+<div id="noteList"></div>
+
+</section>
+
+<section id="chat" class="page">
+
+<h2>🤖 Jarvis</h2>
+
+<div class="card">
+
+<p id="answer">Aguardando comando, senhor.</p>
+
+<button onclick="listen()">🎙️ Falar com Jarvis</button>
+
+</div>
+
+</section>
+
+<section id="settings" class="page">
+
+<h2>⚙️ Configurações</h2>
+
+<div class="card">
+
+<p>Dados armazenados neste aparelho.</p>
+
+<button onclick="backup()">💾 Fazer backup</button>
+
+<button onclick="clearData()">🗑️ Apagar dados</button>
+
+</div>
+
+</section>
+
+</main>
+
+<nav>
+
+<button onclick="show('home')">🏠</button>
+
+<button onclick="show('chat')">🤖</button>
+
+<button onclick="show('tasks')">⏰</button>
+
+<button onclick="show('football')">⚽</button>
+
+<button onclick="show('school')">📚</button>
+
+<button onclick="show('memory')">🧠</button>
+
+<button onclick="show('notes')">📝</button>
+
+<button onclick="show('settings')">⚙️</button>
+
+</nav>
+
+<script>
+
+const get=k=>JSON.parse(localStorage.getItem(k)||'[]');
+
+const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+
+function show(id){
+
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+
+ document.getElementById(id).classList.add('active');
+
+ render();
+
+}
+
+function speak(t){
+
+ if('speechSynthesis' in window){
+
+  speechSynthesis.cancel();
+
+  speechSynthesis.speak(new SpeechSynthesisUtterance(t));
+
+ }
+
+}
+
+function addTask(){
+
+ let t=document.getElementById('task').value;
+
+ let d=document.getElementById('deadline').value;
+
+ if(!t)return;
+
+ let a=get('tasks');a.push({text:t,date:d,done:false});set('tasks',a);
+
+ document.getElementById('task').value='';
+
+ render();
+
+}
+
+function addSchool(){
+
+ let s=document.getElementById('subject').value;
+
+ let t=document.getElementById('schoolTask').value;
+
+ if(!t)return;
+
+ let a=get('school');a.push({subject:s,text:t});set('school',a);
+
+ render();
+
+}
+
+function saveMemory(){
+
+ let c=document.getElementById('category').value;
+
+ let t=document.getElementById('memoryText').value;
+
+ if(!t)return;
+
+ let a=get('memory');a.push({category:c,text:t});set('memory',a);
+
+ document.getElementById('memoryText').value='';
+
+ render();
+
+ speak('Entendido, senhor. Informação guardada na memória.');
+
+}
+
+function saveNote(){
+
+ let t=document.getElementById('note').value;
+
+ if(!t)return;
+
+ let a=get('notes');a.push(t);set('notes',a);
+
+ document.getElementById('note').value='';
+
+ render();
+
+}
+
+function registerTraining(){
+
+ let a=get('training');a.push(new Date().toLocaleString('pt-BR'));set('training',a);
+
+ render();speak('Treino registrado, senhor.');
+
+}
+
+function stretch(){
+
+ speak('Hora do alongamento, senhor. Faça movimentos leves e sem dor.');
+
+ alert('Alongamento: faça movimentos leves e sem dor.');
+
+}
+
+function render(){
+
+ let a=get('tasks');
+
+ document.getElementById('taskList').innerHTML=a.map((x,i)=>
+
+ `<div class="item">⏰ ${x.text}<br><span class="small">${x.date||'Sem prazo'}</span></div>`).join('');
+
+ let s=get('school');
+
+ document.getElementById('schoolList').innerHTML=s.map(x=>
+
+ `<div class="item">📚 <b>${x.subject}</b><br>${x.text}</div>`).join('');
+
+ let m=get('memory');
+
+ document.getElementById('memoryList').innerHTML=m.map(x=>
+
+ `<div class="item">🧠 ${x.category}: ${x.text}</div>`).join('');
+
+ let n=get('notes');
+
+ document.getElementById('noteList').innerHTML=n.map(x=>
+
+ `<div class="item">📝 ${x}</div>`).join('');
+
+ document.getElementById('footballData').innerHTML=
+
+ `<div class="card">Treinos registrados: ${get('training').length}</div>`;
+
+}
+
+function listen(){
+
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+
+ if(!SR){
+
+  document.getElementById('answer').textContent='Seu navegador não oferece reconhecimento de voz.';
+
+  return;
+
+ }
+
+ let r=new SR();
+
+ r.lang='pt-BR';
+
+ r.onresult=e=>{
+
+  let q=e.results[0][0].transcript.toLowerCase();
+
+  let ans='Entendido, senhor.';
+
+  if(q.includes('futebol')){show('football');ans='Abrindo futebol.'}
+
+  else if(q.includes('escola')){show('school');ans='Abrindo escola.'}
+
+  else if(q.includes('tarefa')){show('tasks');ans='Abrindo suas tarefas.'}
+
+  else if(q.includes('memória')){show('memory');ans='Abrindo sua memória.'}
+
+  else if(q.includes('nota')){show('notes');ans='Abrindo suas notas.'}
+
+  document.getElementById('answer').textContent=ans;
+
+  speak(ans);
+
+ };
+
+ r.start();
+
+}
+
+function backup(){
+
+ let data={tasks:get('tasks'),school:get('school'),memory:get('memory'),notes:get('notes'),training:get('training')};
+
+ let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+
+ let a=document.createElement('a');
+
+ a.href=URL.createObjectURL(blob);
+
+ a.download='jarvis-backup.json';
+
+ a.click();
+
+}
+
+function clearData(){
+
+ if(confirm('Senhor, deseja realmente apagar os dados?')){
+
+  localStorage.clear();render();
+
+ }
+
+}
+
+render();
+
+</script>
+
+</body>
+
+</html>
